@@ -1,0 +1,6 @@
+globals live in their space
+ but variables from stack frame, are saved somewhere, not in its stack frame
+look for somepalce
+
+walk it stack down
+to find the first one
