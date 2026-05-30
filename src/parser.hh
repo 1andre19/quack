@@ -460,17 +460,15 @@ namespace yy {
       // list_id
       char dummy12[sizeof (std::vector<std::string>)];
 
-      // llamada_expresion
-      // list_expresion
-      // mas_expr
+      // args
+      // list_expr
       char dummy13[sizeof (std::vector<std::unique_ptr<ExprAST>>)];
 
       // funcs.opt
       char dummy14[sizeof (std::vector<std::unique_ptr<FuncDeclStmt>>)];
 
       // parametros
-      // list_params
-      // mas_params
+      // list_param
       char dummy15[sizeof (std::vector<std::unique_ptr<ParamVarDecl>>)];
 
       // cuerpo
@@ -481,7 +479,6 @@ namespace yy {
       // vars
       // vars.opt
       // list_vars
-      // mas_vars
       char dummy17[sizeof (std::vector<std::unique_ptr<VarDeclStmt>>)];
     };
 
@@ -643,27 +640,24 @@ namespace yy {
         S_vars = 53,                             // vars
         S_54_vars_opt = 54,                      // vars.opt
         S_list_vars = 55,                        // list_vars
-        S_mas_vars = 56,                         // mas_vars
-        S_list_id = 57,                          // list_id
-        S_tipo = 58,                             // tipo
-        S_cte = 59,                              // cte
-        S_asigna = 60,                           // asigna
-        S_expresion = 61,                        // expresion
-        S_exp = 62,                              // exp
-        S_comp = 63,                             // comp
-        S_termino = 64,                          // termino
-        S_factor = 65,                           // factor
-        S_signo = 66,                            // signo
-        S_llamada = 67,                          // llamada
-        S_llamada_expresion = 68,                // llamada_expresion
-        S_list_expresion = 69,                   // list_expresion
-        S_mas_expr = 70,                         // mas_expr
-        S_funcs = 71,                            // funcs
-        S_parametros = 72,                       // parametros
-        S_list_params = 73,                      // list_params
-        S_mas_params = 74,                       // mas_params
-        S_param = 75,                            // param
-        S_tipo_func = 76                         // tipo_func
+        S_list_id = 56,                          // list_id
+        S_tipo = 57,                             // tipo
+        S_cte = 58,                              // cte
+        S_asigna = 59,                           // asigna
+        S_expresion = 60,                        // expresion
+        S_exp = 61,                              // exp
+        S_comp = 62,                             // comp
+        S_termino = 63,                          // termino
+        S_factor = 64,                           // factor
+        S_signo = 65,                            // signo
+        S_llamada = 66,                          // llamada
+        S_args = 67,                             // args
+        S_list_expr = 68,                        // list_expr
+        S_funcs = 69,                            // funcs
+        S_parametros = 70,                       // parametros
+        S_param = 71,                            // param
+        S_list_param = 72,                       // list_param
+        S_tipo_func = 73                         // tipo_func
       };
     };
 
@@ -758,9 +752,8 @@ namespace yy {
         value.move< std::vector<std::string> > (std::move (that.value));
         break;
 
-      case symbol_kind::S_llamada_expresion: // llamada_expresion
-      case symbol_kind::S_list_expresion: // list_expresion
-      case symbol_kind::S_mas_expr: // mas_expr
+      case symbol_kind::S_args: // args
+      case symbol_kind::S_list_expr: // list_expr
         value.move< std::vector<std::unique_ptr<ExprAST>> > (std::move (that.value));
         break;
 
@@ -769,8 +762,7 @@ namespace yy {
         break;
 
       case symbol_kind::S_parametros: // parametros
-      case symbol_kind::S_list_params: // list_params
-      case symbol_kind::S_mas_params: // mas_params
+      case symbol_kind::S_list_param: // list_param
         value.move< std::vector<std::unique_ptr<ParamVarDecl>> > (std::move (that.value));
         break;
 
@@ -783,7 +775,6 @@ namespace yy {
       case symbol_kind::S_vars: // vars
       case symbol_kind::S_54_vars_opt: // vars.opt
       case symbol_kind::S_list_vars: // list_vars
-      case symbol_kind::S_mas_vars: // mas_vars
         value.move< std::vector<std::unique_ptr<VarDeclStmt>> > (std::move (that.value));
         break;
 
@@ -1130,9 +1121,8 @@ switch (yykind)
         value.template destroy< std::vector<std::string> > ();
         break;
 
-      case symbol_kind::S_llamada_expresion: // llamada_expresion
-      case symbol_kind::S_list_expresion: // list_expresion
-      case symbol_kind::S_mas_expr: // mas_expr
+      case symbol_kind::S_args: // args
+      case symbol_kind::S_list_expr: // list_expr
         value.template destroy< std::vector<std::unique_ptr<ExprAST>> > ();
         break;
 
@@ -1141,8 +1131,7 @@ switch (yykind)
         break;
 
       case symbol_kind::S_parametros: // parametros
-      case symbol_kind::S_list_params: // list_params
-      case symbol_kind::S_mas_params: // mas_params
+      case symbol_kind::S_list_param: // list_param
         value.template destroy< std::vector<std::unique_ptr<ParamVarDecl>> > ();
         break;
 
@@ -1155,7 +1144,6 @@ switch (yykind)
       case symbol_kind::S_vars: // vars
       case symbol_kind::S_54_vars_opt: // vars.opt
       case symbol_kind::S_list_vars: // list_vars
-      case symbol_kind::S_mas_vars: // mas_vars
         value.template destroy< std::vector<std::unique_ptr<VarDeclStmt>> > ();
         break;
 
@@ -1940,7 +1928,7 @@ switch (yykind)
     void yy_lac_discard_ (const char* event);
 
     /// Stored state numbers (used for stacks).
-    typedef unsigned char state_type;
+    typedef signed char state_type;
 
     /// The arguments of the error message.
     int yy_syntax_error_arguments_ (const context& yyctx,
@@ -1991,7 +1979,7 @@ switch (yykind)
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
     // number is the opposite.  If YYTABLE_NINF, syntax error.
-    static const unsigned char yytable_[];
+    static const signed char yytable_[];
 
     static const signed char yycheck_[];
 
@@ -2244,8 +2232,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 142,     ///< Last index in yytable_.
-      yynnts_ = 36,  ///< Number of nonterminal symbols.
+      yylast_ = 138,     ///< Last index in yytable_.
+      yynnts_ = 33,  ///< Number of nonterminal symbols.
       yyfinal_ = 4 ///< Termination state number.
     };
 
@@ -2329,9 +2317,8 @@ switch (yykind)
         value.copy< std::vector<std::string> > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_llamada_expresion: // llamada_expresion
-      case symbol_kind::S_list_expresion: // list_expresion
-      case symbol_kind::S_mas_expr: // mas_expr
+      case symbol_kind::S_args: // args
+      case symbol_kind::S_list_expr: // list_expr
         value.copy< std::vector<std::unique_ptr<ExprAST>> > (YY_MOVE (that.value));
         break;
 
@@ -2340,8 +2327,7 @@ switch (yykind)
         break;
 
       case symbol_kind::S_parametros: // parametros
-      case symbol_kind::S_list_params: // list_params
-      case symbol_kind::S_mas_params: // mas_params
+      case symbol_kind::S_list_param: // list_param
         value.copy< std::vector<std::unique_ptr<ParamVarDecl>> > (YY_MOVE (that.value));
         break;
 
@@ -2354,7 +2340,6 @@ switch (yykind)
       case symbol_kind::S_vars: // vars
       case symbol_kind::S_54_vars_opt: // vars.opt
       case symbol_kind::S_list_vars: // list_vars
-      case symbol_kind::S_mas_vars: // mas_vars
         value.copy< std::vector<std::unique_ptr<VarDeclStmt>> > (YY_MOVE (that.value));
         break;
 
@@ -2447,9 +2432,8 @@ switch (yykind)
         value.move< std::vector<std::string> > (YY_MOVE (s.value));
         break;
 
-      case symbol_kind::S_llamada_expresion: // llamada_expresion
-      case symbol_kind::S_list_expresion: // list_expresion
-      case symbol_kind::S_mas_expr: // mas_expr
+      case symbol_kind::S_args: // args
+      case symbol_kind::S_list_expr: // list_expr
         value.move< std::vector<std::unique_ptr<ExprAST>> > (YY_MOVE (s.value));
         break;
 
@@ -2458,8 +2442,7 @@ switch (yykind)
         break;
 
       case symbol_kind::S_parametros: // parametros
-      case symbol_kind::S_list_params: // list_params
-      case symbol_kind::S_mas_params: // mas_params
+      case symbol_kind::S_list_param: // list_param
         value.move< std::vector<std::unique_ptr<ParamVarDecl>> > (YY_MOVE (s.value));
         break;
 
@@ -2472,7 +2455,6 @@ switch (yykind)
       case symbol_kind::S_vars: // vars
       case symbol_kind::S_54_vars_opt: // vars.opt
       case symbol_kind::S_list_vars: // list_vars
-      case symbol_kind::S_mas_vars: // mas_vars
         value.move< std::vector<std::unique_ptr<VarDeclStmt>> > (YY_MOVE (s.value));
         break;
 
@@ -2542,7 +2524,7 @@ switch (yykind)
 
 
 } // yy
-#line 2546 "parser.hh"
+#line 2528 "parser.hh"
 
 
 

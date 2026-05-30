@@ -34,15 +34,15 @@
 
 %type <std::unique_ptr<ExprAST>> expresion exp termino factor
 %type <std::unique_ptr<CallExpr>> llamada
-%type <std::vector<std::unique_ptr<ExprAST>>> llamada_expresion list_expresion mas_expr
+%type <std::vector<std::unique_ptr<ExprAST>>> args list_expr 
 
 %type <std::unique_ptr<StmntAST>> estatuto asigna ciclo imprime
 %type <std::vector<std::unique_ptr<StmntAST>>> adentro cuerpo sino
 %type <std::unique_ptr<IfStmnt>> condicion
 
-%type <std::vector<std::unique_ptr<VarDeclStmt>>> vars list_vars mas_vars
+%type <std::vector<std::unique_ptr<VarDeclStmt>>> vars list_vars 
 %type <std::unique_ptr<ParamVarDecl>> param
-%type <std::vector<std::unique_ptr<ParamVarDecl>>> parametros list_params mas_params 
+%type <std::vector<std::unique_ptr<ParamVarDecl>>> parametros list_param
 %type <std::unique_ptr<FuncDeclStmt>> funcs
 %type <Type> tipo_func
 
@@ -227,35 +227,28 @@ vars.opt:
   ;
 
 list_vars:
-    list_id ":" tipo ";" mas_vars
+    ID list_id ":" tipo ";" list_vars
     {
-        $5.insert($5.begin(), std::make_unique<VarDeclStmt>($1, $3));
-        $$ = std::move($5);
-    }
-  ;
+        $2.insert($2.begin(), $1);
 
-mas_vars:
-    list_id ":" tipo ";"  mas_vars
-    {
-        $5.insert($5.begin(), std::make_unique<VarDeclStmt>($1, $3));
-        $$ = std::move($5);
+        $6.insert($6.begin(), std::make_unique<VarDeclStmt>($2, $4));
+        $$ = std::move($6);
     }
-  | %empty
-  {
-    $$ = std::vector<std::unique_ptr<VarDeclStmt>>();
-  }
+    | %empty
+    {
+        $$ = std::vector<std::unique_ptr<VarDeclStmt>>();
+    }
   ;
 
 list_id:
-    ID
+   "," ID list_id
+    {
+        $$ = std::move($3);
+        $$.insert($$.begin(), $2);
+    }
+    | %empty
     {
         $$ = std::vector<std::string>();
-        $$.push_back($1);
-    }
-  | ID "," list_id
-    {
-        $$ = $3;
-        $$.insert($$.begin(), $1);
     }
   ;
 
@@ -394,32 +387,31 @@ signo:
   ;
 
 llamada:
-    ID "(" llamada_expresion ")" 
+    ID "(" args ")" 
     {
         $$ = std::make_unique<CallExpr>($1, std::move($3));
     }
   ;
 
-llamada_expresion:
-    list_expresion { $$ = std::move($1);}
-  | %empty { $$ = std::vector<std::unique_ptr<ExprAST>>();}
-  ;
-
-list_expresion:
-    expresion mas_expr 
-    {
+args:
+    expresion list_expr 
+    { 
         $2.insert($2.begin(), std::move($1));
         $$ = std::move($2);
     }
+  | %empty 
+    { 
+        $$ = std::vector<std::unique_ptr<ExprAST>>();
+    }
   ;
 
-mas_expr:
-    "," expresion mas_expr
+list_expr:
+    "," expresion list_expr 
     {
         $3.insert($3.begin(), std::move($2));
         $$ = std::move($3);
     }
-  | %empty
+    | %empty
     {
         $$ = std::vector<std::unique_ptr<ExprAST>>();
     }
@@ -433,42 +425,36 @@ funcs:
   ;
 
 parametros:
-    list_params
-    {
-        $$ = std::move($1);
-    }
-  | %empty
-    {
-        $$ = std::vector<std::unique_ptr<ParamVarDecl>>();
-    }
-  ;
-
-list_params:
-    param mas_params
+    param list_param
     {
         $2.insert($2.begin(), std::move($1));
         $$ = std::move($2);
     }
-  ;
+    | %empty
+    {
+        $$ = std::vector<std::unique_ptr<ParamVarDecl>>();
+    }
+    ;
 
-mas_params:
-    "," param mas_params
+param:
+     ID ":" tipo
+     {
+        $$ = std::make_unique<ParamVarDecl>($1, $3);
+     }
+     ;
+
+list_param:
+    "," param list_param
     {
         $3.insert($3.begin(), std::move($2));
         $$ = std::move($3);
     }
-  | %empty
+    | %empty
     {
         $$ = std::vector<std::unique_ptr<ParamVarDecl>>();
     }
-  ;
+    ;
 
-param:
-    ID ":" tipo
-    {
-        $$ = std::make_unique<ParamVarDecl>($1, $3);
-    }
-  ;
 
 tipo_func:
     NULO

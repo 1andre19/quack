@@ -155,6 +155,9 @@ class CallExpr : public ExprAST {
         : Callee(Callee), Args(std::move(Args)) {}
 };
 
+// language specification  says call statement lives under estatuto
+// but calls are expressions since they can produce a value
+// im prolly dumb will check later
 class CallStmt : public StmntAST {
     std::unique_ptr<CallExpr> Call;
 
