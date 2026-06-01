@@ -1,4 +1,5 @@
 #include "driver.hh"
+#include "astVisitor.h"
 #include "parser.hh"
 
 driver::driver()
@@ -12,4 +13,13 @@ int driver::parse(const std::string &f) {
     int res = parse();
     scan_end();
     return res;
+}
+
+void driver::compile() {
+    if (!ast) {
+        std::cout << "No ast" << std::endl;
+    }
+    func_dir.add_entry("global", {}, Type::VOID);
+    QuadGenerator gen(func_dir, quads, cube);
+    ast->accept(gen);
 }

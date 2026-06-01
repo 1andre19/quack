@@ -1,5 +1,36 @@
 #pragma once
-#include "ast.h"
+#include "FunctionDirectory.h"
+#include "SemanticCube.h"
+#include "Types.h"
+#include <stack>
+
+class IntegerLiteral;
+class FloatingLiteral;
+class StringLiteral;
+class ReferenceExpr;
+class BinaryOpExpr;
+class UnaryOpExpr;
+class CallExpr;
+
+class AssignmentStmnt;
+class VarDeclStmt;
+class ParamVarDecl;
+class FuncDeclStmt;
+class PrintStmnt;
+class WhileStmnt;
+class IfStmnt;
+class CallStmt;
+
+class ProgramAST;
+
+// literal string for now
+using Address = std::string;
+
+// currently quads we manage a b t1, no virt addresses yet
+struct Quadruple {
+    Operator op;
+    Address arg1, arg2, result;
+};
 
 class Visitor {
   public:
@@ -7,7 +38,7 @@ class Visitor {
     // expr
     virtual void visit(IntegerLiteral &node) = 0;
     virtual void visit(FloatingLiteral &node) = 0;
-    virtual void visit(StringLiteral &node) = 0;
+    // virtual void visit(StringLiteral &node) = 0;
     virtual void visit(ReferenceExpr &node) = 0;
     virtual void visit(BinaryOpExpr &node) = 0;
     virtual void visit(UnaryOpExpr &node) = 0;
@@ -22,6 +53,54 @@ class Visitor {
     virtual void visit(IfStmnt &node) = 0;
     virtual void visit(CallStmt &node) = 0;
 
-    // Top-level
+    // program
     virtual void visit(ProgramAST &node) = 0;
+};
+
+class QuadGenerator : public Visitor {
+    FunctionDirectory &dir;
+    std::vector<Quadruple> &quads;
+    SemanticCube &cube;
+
+    // type and operand tracking
+    std::stack<Type> type_stack;
+    std::stack<Address> argument_stack;
+
+    // for backpatching whiles, if,
+    std::stack<int> jump_stack;
+
+    // std::stack<std::string> scope_stack;
+    std::string current_scope;
+
+    int tmp_count = 0;
+
+    Address new_temp();
+    void emit(Operator op, Address arg1, Address arg2, Address result);
+    void backpatch(int quad_line, int quad_destination);
+    SymbolEntry *lookup_symbol(const std::string &id);
+
+  public:
+    QuadGenerator(FunctionDirectory &dir, std::vector<Quadruple> &quads,
+                  SemanticCube &cube)
+        : dir(dir), quads(quads), current_scope("global"), cube(cube) {}
+
+    // expr
+    void visit(IntegerLiteral &node) override;
+    void visit(FloatingLiteral &node) override;
+    // void visit(StringLiteral &node) override;
+    void visit(ReferenceExpr &node) override;
+    void visit(BinaryOpExpr &node) override;
+    void visit(UnaryOpExpr &node) override;
+    void visit(CallExpr &node) override;
+    // stmnt
+    void visit(AssignmentStmnt &node) override;
+    void visit(VarDeclStmt &node) override;
+    void visit(ParamVarDecl &node) override;
+    void visit(FuncDeclStmt &node) override;
+    void visit(PrintStmnt &node) override;
+    void visit(WhileStmnt &node) override;
+    void visit(IfStmnt &node) override;
+    void visit(CallStmt &node) override;
+    // program
+    void visit(ProgramAST &node) override;
 };

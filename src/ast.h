@@ -5,8 +5,12 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+class Visitor;
+
 class NodeAST {
   public:
+    virtual void accept(Visitor &v) = 0;
     virtual ~NodeAST() = default;
 };
 
@@ -15,72 +19,78 @@ class ExprAST : public NodeAST {};
 class StmntAST : public NodeAST {};
 
 class IntegerLiteral : public ExprAST {
-    long Val;
-
   public:
+    long Val;
     IntegerLiteral(long Val) : Val(Val) {}
+    Type type = Type::INT;
+    void accept(Visitor &v) override;
 };
 
 class FloatingLiteral : public ExprAST {
+  public:
     double Val;
-
-  public:
     FloatingLiteral(double Val) : Val(Val) {}
+    Type type = Type::FLOAT;
+    void accept(Visitor &v) override;
 };
 
+/*
 class StringLiteral : public ExprAST {
-    std::string Val;
-
   public:
+    std::string Val;
     StringLiteral(std::string Val) : Val(std::move(Val)) {}
+    // type string
+    void accept(Visitor &v) override;
 };
+*/
 
 // expression class for referencing a variabe
 class ReferenceExpr : public ExprAST {
     // might be worth it to add types here
-    std::string Name;
-
   public:
-    ReferenceExpr(const std::string &Name) : Name(Name) {}
+    std::string id;
+    Type type;
+    void accept(Visitor &v) override;
+    ReferenceExpr(const std::string &id) : id(id) {}
 };
 
 class BinaryOpExpr : public ExprAST {
+  public:
     Operator Op;
     std::unique_ptr<ExprAST> lhs; // kaleidoscope uses unique_ptr, w emay only
                                   // need refs to it well see
     std::unique_ptr<ExprAST> rhs;
-
-  public:
     BinaryOpExpr(Operator Op, std::unique_ptr<ExprAST> lhs,
                  std::unique_ptr<ExprAST> rhs)
         : Op(Op), lhs(std::move(lhs)), rhs(std::move(rhs)) {}
+    void accept(Visitor &v) override;
 };
 
 class UnaryOpExpr : public ExprAST {
+  public:
     Operator Op;
     std::unique_ptr<ExprAST> rhs;
-
-  public:
     UnaryOpExpr(Operator Op, std::unique_ptr<ExprAST> rhs)
         : Op(Op), rhs(std::move(rhs)) {}
+    void accept(Visitor &v) override;
 };
 
 class AssignmentStmnt : public StmntAST {
+  public:
     std::string Name;
     std::unique_ptr<ExprAST> rhs;
-
-  public:
     AssignmentStmnt(std::string Name, std::unique_ptr<ExprAST> rhs)
         : Name(Name), rhs(std::move(rhs)) {}
+    void accept(Visitor &v) override;
 };
 
 class VarDeclStmt : public StmntAST {
+  public:
     std::vector<std::string> Names;
     Type type;
-
-  public:
     VarDeclStmt(std::vector<std::string> Names, Type type)
         : Names(std::move(Names)), type(type) {}
+    void accept(Visitor &v) override;
 };
 
 class ParamVarDecl : public StmntAST {
@@ -90,6 +100,7 @@ class ParamVarDecl : public StmntAST {
   public:
     ParamVarDecl(std::string Name, Type type)
         : Name(std::move(Name)), type(type) {}
+    void accept(Visitor &v) override;
 };
 
 class FuncDeclStmt : public StmntAST {
@@ -107,6 +118,7 @@ class FuncDeclStmt : public StmntAST {
                  Type ReturnType, std::vector<std::unique_ptr<StmntAST>> Body)
         : Name(std::move(Name)), Params(std::move(Params)),
           ReturnType(ReturnType), Body(std::move(Body)) {}
+    void accept(Visitor &v) override;
 };
 
 // class CompoundStmnt : public StmntAST {
@@ -120,6 +132,7 @@ class PrintStmnt : public StmntAST {
     PrintStmnt(std::vector<std::unique_ptr<ExprAST>> Args,
                std::vector<std::string> Strings)
         : Args(std::move(Args)), Strings(std::move(Strings)) {}
+    void accept(Visitor &v) override;
 };
 
 class WhileStmnt : public StmntAST {
@@ -130,6 +143,7 @@ class WhileStmnt : public StmntAST {
     WhileStmnt(std::unique_ptr<ExprAST> Condition,
                std::vector<std::unique_ptr<StmntAST>> Body)
         : Condition(std::move(Condition)), Body(std::move(Body)) {}
+    void accept(Visitor &v) override;
 };
 
 class IfStmnt : public StmntAST {
@@ -143,6 +157,7 @@ class IfStmnt : public StmntAST {
             std::vector<std::unique_ptr<StmntAST>> Else)
         : Condition(std::move(Condition)), Then(std::move(Then)),
           Else(std::move(Else)) {}
+    void accept(Visitor &v) override;
 };
 
 class CallExpr : public ExprAST {
@@ -153,6 +168,7 @@ class CallExpr : public ExprAST {
     CallExpr(const std::string &Callee,
              std::vector<std::unique_ptr<ExprAST>> Args)
         : Callee(Callee), Args(std::move(Args)) {}
+    void accept(Visitor &v) override;
 };
 
 // language specification  says call statement lives under estatuto
@@ -163,19 +179,21 @@ class CallStmt : public StmntAST {
 
   public:
     CallStmt(std::unique_ptr<CallExpr> Call) : Call(std::move(Call)) {}
+    void accept(Visitor &v) override;
 };
 
 class ProgramAST : public NodeAST {
+  public:
     std::string Name;
     std::vector<std::unique_ptr<VarDeclStmt>> Globals;
     std::vector<std::unique_ptr<FuncDeclStmt>> Functions;
     std::vector<std::unique_ptr<StmntAST>> Body;
 
-  public:
     ProgramAST(std::string Name,
                std::vector<std::unique_ptr<VarDeclStmt>> Globals,
                std::vector<std::unique_ptr<FuncDeclStmt>> Functions,
                std::vector<std::unique_ptr<StmntAST>> Body)
         : Name(std::move(Name)), Globals(std::move(Globals)),
           Functions(std::move(Functions)), Body(std::move(Body)) {}
+    void accept(Visitor &v) override;
 };

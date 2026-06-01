@@ -1,9 +1,11 @@
 #ifndef DRIVER_HH
 #define DRIVER_HH
+#include "FunctionDirectory.h"
 #include "Scopes.h"
 #include "SemanticCube.h"
 #include "Types.h"
 #include "ast.h"
+#include "astVisitor.h"
 #include "parser.hh"
 #include <memory>
 #include <string>
@@ -20,9 +22,12 @@ class driver {
     SemanticCube cube;
     Type currType;
     std::unique_ptr<ProgramAST> ast;
+    FunctionDirectory func_dir;
+    std::vector<Quadruple> quads;
     driver();
 
     int parse(const std::string &f);
+    void compile();
     // The name of the file being parsed.
     std::string file;
     // Whether to generate parser debug traces.

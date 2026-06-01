@@ -42,3 +42,39 @@ inline std::ostream &operator<<(std::ostream &out, const Type t) {
     }
     return out;
 }
+
+inline std::ostream &operator<<(std::ostream &out, const Operator op) {
+    switch (op) {
+    case PLUS:
+        out << "+";
+        break;
+    case MINUS:
+        out << "-";
+        break;
+    case TIMES:
+        out << "*";
+        break;
+    case DIV:
+        out << "/";
+        break;
+    case GT:
+        out << ">";
+        break;
+    case LT:
+        out << "<";
+        break;
+    case NEQ:
+        out << "!=";
+        break;
+    case EQ:
+        out << "==";
+        break;
+    case ASSIGN:
+        out << "=";
+        break;
+    case OP_COUNT:
+        out << "OP_COUNT";
+        break;
+    }
+    return out;
+}

@@ -1,3 +1,4 @@
+#include "custom_errors.h"
 #include "driver.hh"
 
 int main(int argc, char *argv[]) {
@@ -12,7 +13,19 @@ int main(int argc, char *argv[]) {
             result = drv.parse(argv[i]);
             if (result == 0) {
                 std::cout << "Success!" << std::endl;
-                drv.scopes.currentScope->print_table();
+                try {
+                    drv.compile();
+
+                    for (int qi = 0; qi < (int)drv.quads.size(); qi++) {
+                        auto &q = drv.quads[qi];
+                        std::cout << qi << ": " << q.op << " " << q.arg1 << " "
+                                  << q.arg2 << " " << q.result << "\n";
+                    }
+                } catch (const SemanticError &e) {
+                    std::cerr << "SemanticError: " << e.what() << "\n";
+                    return 1;
+                }
+
             } else {
                 // tho technically will still see th emessage if parsing
                 // succeeds but semantic checks fail, must be clearer on that
