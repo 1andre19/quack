@@ -435,6 +435,7 @@ namespace yy {
       // llamada
       char dummy6[sizeof (std::unique_ptr<CallExpr>)];
 
+      // imprime_args
       // cte
       // expresion
       // exp
@@ -460,6 +461,7 @@ namespace yy {
       // list_id
       char dummy12[sizeof (std::vector<std::string>)];
 
+      // imprime_mas
       // args
       // list_expr
       char dummy13[sizeof (std::vector<std::unique_ptr<ExprAST>>)];
@@ -721,6 +723,7 @@ namespace yy {
         value.move< std::unique_ptr<CallExpr> > (std::move (that.value));
         break;
 
+      case symbol_kind::S_imprime_args: // imprime_args
       case symbol_kind::S_cte: // cte
       case symbol_kind::S_expresion: // expresion
       case symbol_kind::S_exp: // exp
@@ -752,6 +755,7 @@ namespace yy {
         value.move< std::vector<std::string> > (std::move (that.value));
         break;
 
+      case symbol_kind::S_imprime_mas: // imprime_mas
       case symbol_kind::S_args: // args
       case symbol_kind::S_list_expr: // list_expr
         value.move< std::vector<std::unique_ptr<ExprAST>> > (std::move (that.value));
@@ -1090,6 +1094,7 @@ switch (yykind)
         value.template destroy< std::unique_ptr<CallExpr> > ();
         break;
 
+      case symbol_kind::S_imprime_args: // imprime_args
       case symbol_kind::S_cte: // cte
       case symbol_kind::S_expresion: // expresion
       case symbol_kind::S_exp: // exp
@@ -1121,6 +1126,7 @@ switch (yykind)
         value.template destroy< std::vector<std::string> > ();
         break;
 
+      case symbol_kind::S_imprime_mas: // imprime_mas
       case symbol_kind::S_args: // args
       case symbol_kind::S_list_expr: // list_expr
         value.template destroy< std::vector<std::unique_ptr<ExprAST>> > ();
@@ -2286,6 +2292,7 @@ switch (yykind)
         value.copy< std::unique_ptr<CallExpr> > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_imprime_args: // imprime_args
       case symbol_kind::S_cte: // cte
       case symbol_kind::S_expresion: // expresion
       case symbol_kind::S_exp: // exp
@@ -2317,6 +2324,7 @@ switch (yykind)
         value.copy< std::vector<std::string> > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_imprime_mas: // imprime_mas
       case symbol_kind::S_args: // args
       case symbol_kind::S_list_expr: // list_expr
         value.copy< std::vector<std::unique_ptr<ExprAST>> > (YY_MOVE (that.value));
@@ -2401,6 +2409,7 @@ switch (yykind)
         value.move< std::unique_ptr<CallExpr> > (YY_MOVE (s.value));
         break;
 
+      case symbol_kind::S_imprime_args: // imprime_args
       case symbol_kind::S_cte: // cte
       case symbol_kind::S_expresion: // expresion
       case symbol_kind::S_exp: // exp
@@ -2432,6 +2441,7 @@ switch (yykind)
         value.move< std::vector<std::string> > (YY_MOVE (s.value));
         break;
 
+      case symbol_kind::S_imprime_mas: // imprime_mas
       case symbol_kind::S_args: // args
       case symbol_kind::S_list_expr: // list_expr
         value.move< std::vector<std::unique_ptr<ExprAST>> > (YY_MOVE (s.value));
@@ -2524,7 +2534,7 @@ switch (yykind)
 
 
 } // yy
-#line 2528 "parser.hh"
+#line 2538 "parser.hh"
 
 
 

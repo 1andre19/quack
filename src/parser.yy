@@ -45,6 +45,8 @@
 %type <std::vector<std::unique_ptr<ParamVarDecl>>> parametros list_param
 %type <std::unique_ptr<FuncDeclStmt>> funcs
 %type <Type> tipo_func
+%type <std::unique_ptr<ExprAST>>        imprime_args
+%type <std::vector<std::unique_ptr<ExprAST>>> imprime_mas
 
 %type <std::vector<std::unique_ptr<FuncDeclStmt>>> funcs.opt
 %type <std::vector<std::unique_ptr<VarDeclStmt>>> vars.opt
@@ -166,21 +168,34 @@ estatuto:
 imprime:
     PRINT "(" imprime_args imprime_mas ")" ";"
     {
+        $4.insert($4.begin(), std::move($3));
         $$ = std::make_unique<PrintStmnt>(
-            std::vector<std::unique_ptr<ExprAST>>{},
-            std::vector<std::string>{}
+            std::move($4)
         );
     }
   ;
 
 imprime_args:
     expresion
+    {
+        $$ = std::move($1);
+    }
   | LETRERO
+    {
+        $$ = std::make_unique<StringLiteral>($1);
+    }
   ;
 
 imprime_mas:
     "," imprime_args imprime_mas
+    {
+        $3.insert($3.begin(), std::move($2));
+        $$ = std::move($3);
+    }
   | %empty
+  {
+    $$ = std::vector<std::unique_ptr<ExprAST>>();
+  }
   ;
 
 ciclo:
@@ -420,7 +435,7 @@ list_expr:
 funcs:
     tipo_func ID "(" parametros ")" "{" vars.opt cuerpo "}" ";" 
     {
-        $$ = std::make_unique<FuncDeclStmt>(std::move($2), std::move($4), $1, std::move($8));     
+        $$ = std::make_unique<FuncDeclStmt>(std::move($2), std::move($4), std::move($7), $1, std::move($8));     
     }
   ;
 

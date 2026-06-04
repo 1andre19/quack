@@ -5,12 +5,14 @@
 enum Type {
     INT,
     FLOAT,
+    STR,
     VOID,
     ERR,
     // TYPE_COUNT,
 };
 
-const int TYPE_COUNT = 2; // for now, we really only do have 2 real types
+// TODO fix whateva this is, we should add strhings
+const int TYPE_COUNT = 3; // for now, we really only do have 2 real types
 
 enum Operator {
     PLUS,

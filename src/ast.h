@@ -34,7 +34,6 @@ class FloatingLiteral : public ExprAST {
     void accept(Visitor &v) override;
 };
 
-/*
 class StringLiteral : public ExprAST {
   public:
     std::string Val;
@@ -42,7 +41,6 @@ class StringLiteral : public ExprAST {
     // type string
     void accept(Visitor &v) override;
 };
-*/
 
 // expression class for referencing a variabe
 class ReferenceExpr : public ExprAST {
@@ -94,30 +92,31 @@ class VarDeclStmt : public StmntAST {
 };
 
 class ParamVarDecl : public StmntAST {
+  public:
     std::string Name;
     Type type;
-
-  public:
     ParamVarDecl(std::string Name, Type type)
         : Name(std::move(Name)), type(type) {}
     void accept(Visitor &v) override;
 };
 
 class FuncDeclStmt : public StmntAST {
+  public:
     std::string Name;
     std::vector<std::unique_ptr<ParamVarDecl>>
         Params; // no need for unique_ptr, no subclasses
                 // for it, but for ExprAST there is a need
-    // local vars??
+    std::vector<std::unique_ptr<VarDeclStmt>> Locals;
     Type ReturnType;
     std::vector<std::unique_ptr<StmntAST>> Body;
 
-  public:
     FuncDeclStmt(std::string Name,
                  std::vector<std::unique_ptr<ParamVarDecl>> Params,
+                 std::vector<std::unique_ptr<VarDeclStmt>> Locals,
                  Type ReturnType, std::vector<std::unique_ptr<StmntAST>> Body)
         : Name(std::move(Name)), Params(std::move(Params)),
-          ReturnType(ReturnType), Body(std::move(Body)) {}
+          Locals(std::move(Locals)), ReturnType(ReturnType),
+          Body(std::move(Body)) {}
     void accept(Visitor &v) override;
 };
 
@@ -126,12 +125,10 @@ class FuncDeclStmt : public StmntAST {
 // };
 
 class PrintStmnt : public StmntAST {
-    std::vector<std::unique_ptr<ExprAST>> Args;
-    std::vector<std::string> Strings; // letrero
   public:
-    PrintStmnt(std::vector<std::unique_ptr<ExprAST>> Args,
-               std::vector<std::string> Strings)
-        : Args(std::move(Args)), Strings(std::move(Strings)) {}
+    std::vector<std::unique_ptr<ExprAST>> Args;
+    PrintStmnt(std::vector<std::unique_ptr<ExprAST>> Args)
+        : Args(std::move(Args)) {}
     void accept(Visitor &v) override;
 };
 

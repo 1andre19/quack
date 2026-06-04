@@ -2,6 +2,7 @@
 #include "FunctionDirectory.h"
 #include "SemanticCube.h"
 #include "Types.h"
+#include "instructions.h"
 #include <stack>
 
 class IntegerLiteral;
@@ -28,7 +29,7 @@ using Address = std::string;
 
 // currently quads we manage a b t1, no virt addresses yet
 struct Quadruple {
-    Operator op;
+    Instruction op;
     Address arg1, arg2, result;
 };
 
@@ -38,7 +39,7 @@ class Visitor {
     // expr
     virtual void visit(IntegerLiteral &node) = 0;
     virtual void visit(FloatingLiteral &node) = 0;
-    // virtual void visit(StringLiteral &node) = 0;
+    virtual void visit(StringLiteral &node) = 0;
     virtual void visit(ReferenceExpr &node) = 0;
     virtual void visit(BinaryOpExpr &node) = 0;
     virtual void visit(UnaryOpExpr &node) = 0;
@@ -75,9 +76,10 @@ class QuadGenerator : public Visitor {
     int tmp_count = 0;
 
     Address new_temp();
-    void emit(Operator op, Address arg1, Address arg2, Address result);
+    void emit(Instruction i, Address arg1, Address arg2, Address result);
     void backpatch(int quad_line, int quad_destination);
     SymbolEntry *lookup_symbol(const std::string &id);
+    Instruction op_to_instruction(Operator op);
 
   public:
     QuadGenerator(FunctionDirectory &dir, std::vector<Quadruple> &quads,
@@ -87,7 +89,7 @@ class QuadGenerator : public Visitor {
     // expr
     void visit(IntegerLiteral &node) override;
     void visit(FloatingLiteral &node) override;
-    // void visit(StringLiteral &node) override;
+    void visit(StringLiteral &node) override;
     void visit(ReferenceExpr &node) override;
     void visit(BinaryOpExpr &node) override;
     void visit(UnaryOpExpr &node) override;

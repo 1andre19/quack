@@ -10,7 +10,7 @@ class SemanticCube {
   private:
     Type cube[OP_COUNT][TYPE_COUNT][TYPE_COUNT];
     // ops + - / *
-    // int float
+    // int float str
     // return float if any side is float
 
     // ops > < != ==

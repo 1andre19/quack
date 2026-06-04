@@ -22,6 +22,7 @@ class FunctionDirectoryEntry {
     FunctionDirectoryEntry(std::string name,
                            const std::vector<FuncParam> params, Type type)
         : name(name), params(params), return_type(type) {
+        // populate func symb table with params
         for (const auto &param : params) {
             symbol_table[param.id] = SymbolEntry(param.id, param.type, false);
         }

@@ -22,13 +22,11 @@ int main(int argc, char *argv[]) {
                                   << q.arg2 << " " << q.result << "\n";
                     }
                 } catch (const SemanticError &e) {
-                    std::cerr << "SemanticError: " << e.what() << "\n";
+                    std::cerr << "semantic error: " << e.what() << "\n";
                     return 1;
                 }
 
             } else {
-                // tho technically will still see th emessage if parsing
-                // succeeds but semantic checks fail, must be clearer on that
                 std::cerr << "Parsing failed" << std::endl;
             }
         }
