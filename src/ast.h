@@ -37,6 +37,7 @@ class FloatingLiteral : public ExprAST {
 class StringLiteral : public ExprAST {
   public:
     std::string Val;
+    Type type = Type::STR;
     StringLiteral(std::string Val) : Val(std::move(Val)) {}
     // type string
     void accept(Visitor &v) override;
@@ -133,10 +134,9 @@ class PrintStmnt : public StmntAST {
 };
 
 class WhileStmnt : public StmntAST {
+  public:
     std::unique_ptr<ExprAST> Condition;
     std::vector<std::unique_ptr<StmntAST>> Body;
-
-  public:
     WhileStmnt(std::unique_ptr<ExprAST> Condition,
                std::vector<std::unique_ptr<StmntAST>> Body)
         : Condition(std::move(Condition)), Body(std::move(Body)) {}
@@ -144,11 +144,10 @@ class WhileStmnt : public StmntAST {
 };
 
 class IfStmnt : public StmntAST {
+  public:
     std::unique_ptr<ExprAST> Condition;
     std::vector<std::unique_ptr<StmntAST>> Then;
     std::vector<std::unique_ptr<StmntAST>> Else;
-
-  public:
     IfStmnt(std::unique_ptr<ExprAST> Condition,
             std::vector<std::unique_ptr<StmntAST>> Then,
             std::vector<std::unique_ptr<StmntAST>> Else)
@@ -158,10 +157,9 @@ class IfStmnt : public StmntAST {
 };
 
 class CallExpr : public ExprAST {
+  public:
     std::string Callee;
     std::vector<std::unique_ptr<ExprAST>> Args;
-
-  public:
     CallExpr(const std::string &Callee,
              std::vector<std::unique_ptr<ExprAST>> Args)
         : Callee(Callee), Args(std::move(Args)) {}
@@ -172,9 +170,8 @@ class CallExpr : public ExprAST {
 // but calls are expressions since they can produce a value
 // im prolly dumb will check later
 class CallStmt : public StmntAST {
-    std::unique_ptr<CallExpr> Call;
-
   public:
+    std::unique_ptr<CallExpr> Call;
     CallStmt(std::unique_ptr<CallExpr> Call) : Call(std::move(Call)) {}
     void accept(Visitor &v) override;
 };

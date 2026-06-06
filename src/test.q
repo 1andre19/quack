@@ -1,6 +1,6 @@
 programa foo;
 vars
-  x, y : entero; a, b: flotante;
+  x, y, z : entero; a, b: flotante;
 
 flotante area_circulo(r : flotante) {
     vars
@@ -14,6 +14,10 @@ inicio
 {
   y = 15 * 30 + 20 * 5 * (1 + 2) * 3;
   a = 15.0;
+  z = x > z;
+  z = x < z;
+  z = x == z;
+  z = x != z;
   b = 234.20;
   escribe("hola gente");
 }

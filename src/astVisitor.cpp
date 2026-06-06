@@ -88,8 +88,7 @@ void QuadGenerator::visit(BinaryOpExpr &node) {
     node.rhs->accept(*this);
 
     // no need for which type is left or right
-    // i think...
-    //, but might aswell just in case
+    //, but just in case
     Type arg2_type = type_stack.top();
     type_stack.pop();
     Type arg1_type = type_stack.top();
@@ -174,18 +173,103 @@ void QuadGenerator::visit(PrintStmnt &node) {
         emit(Instruction::WRITE, "-", "-", to_print);
     }
 }
-void QuadGenerator::visit(WhileStmnt &node) { /* todo */ }
-void QuadGenerator::visit(IfStmnt &node) { /* todo */ }
-void QuadGenerator::visit(CallExpr &node) { /* todo */ }
-void QuadGenerator::visit(CallStmt &node) { /* todo */ }
-void QuadGenerator::visit(ProgramAST &node) {
+void QuadGenerator::visit(WhileStmnt &node) {
+    node.Condition->accept(*this);
+    jump_stack.push(quads.size() - 1);
+
+    Address condition = argument_stack.top();
+    argument_stack.pop();
+    emit(Instruction::JZ, condition, "-", "-"); // will need backpatching
+    jump_stack.push(quads.size() - 1);
+
+    for (auto &stmnt : node.Body) {
+        stmnt->accept(*this);
+    }
+
+    int jmp_to_patch = jump_stack.top();
+    jump_stack.pop();
+    backpatch(jmp_to_patch, quads.size()); // we want to jump one ahead of the
+                                           // goto that brings us back to while
+    int start_while = jump_stack.top();
+    jump_stack.pop();
+    emit(Instruction::JMP, "-", "-", std::to_string(start_while));
+}
+void QuadGenerator::visit(IfStmnt &node) {
+    // todo,
+    // todo
+    // todo
+    int if_jmp;
+
+    node.Condition->accept(*this);
+    Address condition = argument_stack.top();
+    argument_stack.pop();
+    emit(Instruction::JZ, condition, "-", "-");
+    jump_stack.push(quads.size() - 1);
+
+    for (auto &stmnt : node.Then) {
+        stmnt->accept(*this);
+    }
+
+    if (node.Else.empty()) {
+        if_jmp = jump_stack.top();
+        jump_stack.pop();
+        backpatch(if_jmp, quads.size());
+        return;
+    }
+    // jump to skip the else branch
     emit(Instruction::JMP, "-", "-", "-");
+
+    // we need to tell if jmp where to go in case of false
+    if_jmp = jump_stack.top();
+    jump_stack.pop();
+    backpatch(if_jmp, quads.size());
+
+    jump_stack.push(quads.size() - 1);
+
+    for (auto &stmnt : node.Else) {
+        stmnt->accept(*this);
+    }
+    int else_jmp = jump_stack.top();
+    jump_stack.pop();
+    backpatch(else_jmp,
+              quads.size()); // maybe we could make quads.size() be instruction
+                             // no or line no, quads.size is a bit confusing
+}
+
+void QuadGenerator::visit(CallExpr &node) {
+    FunctionDirectoryEntry *func = dir.lookup_entry(node.Callee);
+    if (func == nullptr) {
+        throw SemanticError("function " + node.Callee + " does not exist");
+    }
+    /*
+    compute args ex: func(a : entero, b : flotante, c + 10 : entero)
+     on the stack they will live as
+     c + 10
+     b
+     a
+     and type stack:
+     entero
+     flot
+     enero
+     FuncDirEntry has vector of FuncParam,
+     iterate over this from end to start,
+     compare with type stack, to see if the order of args are correct
+    */
+}
+
+void QuadGenerator::visit(CallStmt &node) { node.Call->accept(*this); }
+
+void QuadGenerator::visit(ProgramAST &node) {
+    emit(Instruction::JMP, "-", "-", "-"); // jump to main
     for (auto &global : node.Globals) {
         global->accept(*this);
     }
     for (auto &func : node.Functions) {
         func->accept(*this);
     }
+
+    // patch jmp to main
+    backpatch(0, quads.size());
 
     for (auto &stmnt : node.Body) {
         stmnt->accept(*this);
