@@ -7,7 +7,6 @@
 #include "instructions.h"
 #include <string>
 
-Address QuadGenerator::new_temp() { return "t" + std::to_string(tmp_count++); }
 void QuadGenerator::emit(Instruction i, Address arg1, Address arg2,
                          Address result) {
     quads.push_back({i, arg1, arg2, result});
@@ -15,7 +14,7 @@ void QuadGenerator::emit(Instruction i, Address arg1, Address arg2,
 
 void QuadGenerator::backpatch(int line_to_patch, int quad_destination) {
     Quadruple &to_patch = quads[line_to_patch];
-    to_patch.result = std::to_string(quad_destination);
+    to_patch.result = quad_destination;
 }
 
 SymbolEntry *QuadGenerator::lookup_symbol(const std::string &id) {
@@ -59,17 +58,20 @@ Instruction QuadGenerator::op_to_instruction(Operator op) {
 
 void QuadGenerator::visit(IntegerLiteral &node) {
     type_stack.push(Type::INT);
-    argument_stack.push(std::to_string(node.Val));
+    Address addr = mm.constant_memory.new_addr(Type::INT);
+    argument_stack.push(addr);
 };
 
 void QuadGenerator::visit(FloatingLiteral &node) {
     type_stack.push(Type::FLOAT);
-    argument_stack.push(std::to_string(node.Val));
+    Address addr = mm.constant_memory.new_addr(Type::FLOAT);
+    argument_stack.push(addr);
 };
 
 void QuadGenerator::visit(StringLiteral &node) {
     type_stack.push(Type::STR);
-    argument_stack.push(node.Val);
+    Address addr = mm.constant_memory.new_addr(Type::STR);
+    argument_stack.push(addr);
 };
 
 void QuadGenerator::visit(ReferenceExpr &node) {
@@ -80,7 +82,7 @@ void QuadGenerator::visit(ReferenceExpr &node) {
     }
     node.type = sym->type;
     type_stack.push(node.type);
-    argument_stack.push(node.id);
+    argument_stack.push(sym->virt_addr);
 };
 
 void QuadGenerator::visit(BinaryOpExpr &node) {
@@ -106,7 +108,7 @@ void QuadGenerator::visit(BinaryOpExpr &node) {
     argument_stack.pop();
     Address arg1 = argument_stack.top();
     argument_stack.pop();
-    Address temp = new_temp();
+    Address temp = mm.temp_memory.new_addr(res_type);
 
     emit(op_to_instruction(node.Op), arg1, arg2, temp);
     argument_stack.push(temp);
@@ -130,13 +132,20 @@ void QuadGenerator::visit(AssignmentStmnt &node) {
         throw SemanticError("type mismatch in assignment to " + node.Name +
                             "; ");
     }
-    emit(Instruction::MOV, rhs_addr, "-", node.Name);
+    emit(Instruction::MOV, rhs_addr, -1, se->virt_addr);
 }
 
 void QuadGenerator::visit(VarDeclStmt &node) {
     FunctionDirectoryEntry *curr = dir.lookup_entry(current_scope);
     for (const auto &name : node.Names) {
-        SymbolEntry sym = SymbolEntry(name, node.type, false);
+        // missing addr
+        int addr;
+        if (curr->name == "global") {
+            addr = mm.global_memory.new_addr(node.type);
+        } else {
+            addr = mm.local_memory.new_addr(node.type);
+        }
+        SymbolEntry sym = SymbolEntry(name, node.type, false, addr);
         if (!curr->add_symbol(SymbolEntry(sym))) {
             throw SemanticError("double declaration of " + name);
         }
@@ -146,9 +155,14 @@ void QuadGenerator::visit(VarDeclStmt &node) {
 void QuadGenerator::visit(ParamVarDecl &node) {}
 void QuadGenerator::visit(FuncDeclStmt &node) {
     std::vector<FuncParam> func_params;
+    // fucked up
+    Address addr;
+
     for (const auto &param : node.Params) {
-        func_params.push_back({param->Name, param->type});
+        addr = mm.local_memory.new_addr(param->type);
+        func_params.push_back({param->Name, param->type, addr});
     }
+
     if (!dir.add_entry(node.Name, func_params, node.ReturnType)) {
         throw SemanticError("double declaration of " + node.Name);
     }
@@ -162,8 +176,10 @@ void QuadGenerator::visit(FuncDeclStmt &node) {
     for (auto &stmnt : node.Body) {
         stmnt->accept(*this);
     }
-    emit(Instruction::ENDFUNC, "-", "-", "-");
+    emit(Instruction::ENDFUNC, -1, -1, -1);
     current_scope = "global";
+    mm.local_memory.reset_mem();
+    mm.temp_memory.reset_mem();
 }
 void QuadGenerator::visit(PrintStmnt &node) {
     for (auto &arg : node.Args) {
@@ -171,7 +187,7 @@ void QuadGenerator::visit(PrintStmnt &node) {
         Address to_print = argument_stack.top();
         argument_stack.pop();
         type_stack.pop();
-        emit(Instruction::WRITE, "-", "-", to_print);
+        emit(Instruction::WRITE, -1, -1, to_print);
     }
 }
 void QuadGenerator::visit(WhileStmnt &node) {
@@ -180,7 +196,7 @@ void QuadGenerator::visit(WhileStmnt &node) {
 
     Address condition = argument_stack.top();
     argument_stack.pop();
-    emit(Instruction::JZ, condition, "-", "-"); // will need backpatching
+    emit(Instruction::JZ, condition, -1, -1); // will need backpatching
     jump_stack.push(quads.size() - 1);
 
     for (auto &stmnt : node.Body) {
@@ -193,7 +209,7 @@ void QuadGenerator::visit(WhileStmnt &node) {
                                            // goto that brings us back to while
     int start_while = jump_stack.top();
     jump_stack.pop();
-    emit(Instruction::JMP, "-", "-", std::to_string(start_while));
+    emit(Instruction::JMP, -1, -1, start_while);
 }
 
 void QuadGenerator::visit(IfStmnt &node) {
@@ -205,7 +221,7 @@ void QuadGenerator::visit(IfStmnt &node) {
     node.Condition->accept(*this);
     Address condition = argument_stack.top();
     argument_stack.pop();
-    emit(Instruction::JZ, condition, "-", "-");
+    emit(Instruction::JZ, condition, -1, -1);
     jump_stack.push(quads.size() - 1);
 
     for (auto &stmnt : node.Then) {
@@ -219,7 +235,7 @@ void QuadGenerator::visit(IfStmnt &node) {
         return;
     }
     // jump to skip the else branch
-    emit(Instruction::JMP, "-", "-", "-");
+    emit(Instruction::JMP, -1, -1, -1);
 
     // we need to tell if jmp where to go in case of false
     if_jmp = jump_stack.top();
@@ -243,7 +259,7 @@ void QuadGenerator::visit(CallExpr &node) {
     if (func == nullptr) {
         throw SemanticError("function " + node.Callee + " does not exist");
     }
-    emit(Instruction::ERA, "-", "-", node.Callee);
+    emit(Instruction::ERA, -1, -1, node.Callee);
 
     if (node.Args.size() != func->params.size()) {
         throw SemanticError("Invalid function call to " + node.Callee +
@@ -277,17 +293,17 @@ void QuadGenerator::visit(CallExpr &node) {
             throw SemanticError("Invalid function call to " + node.Callee);
         }
         type_stack.pop();
-        emit(Instruction::PARAM, argument_stack.top(), "-",
+        emit(Instruction::PARAM, argument_stack.top(), -1,
              std::to_string(curr_arg));
         argument_stack.pop();
         curr_arg--;
     }
 
-    emit(Instruction::CALL, "-", "-", node.Callee);
+    emit(Instruction::CALL, -1, -1, node.Callee);
 
     if (func->return_type != Type::VOID) {
-        Address temp = new_temp();
-        emit(Instruction::MOV, node.Callee, "-", temp);
+        Address temp = mm.temp_memory.new_addr(func->return_type);
+        emit(Instruction::MOV, node.Callee, -1, temp);
         argument_stack.push(temp);
         type_stack.push(func->return_type);
     }
@@ -305,11 +321,11 @@ void QuadGenerator::visit(ReturnStmnt &node) {
     type_stack.pop();
     Address to_return = argument_stack.top();
     argument_stack.pop();
-    emit(Instruction::RET, "-", "-", to_return);
+    emit(Instruction::RET, -1, -1, to_return);
 }
 
 void QuadGenerator::visit(ProgramAST &node) {
-    emit(Instruction::JMP, "-", "-", "-"); // jump to main
+    emit(Instruction::JMP, -1, -1, -1); // jump to main
     for (auto &global : node.Globals) {
         global->accept(*this);
     }
@@ -323,5 +339,5 @@ void QuadGenerator::visit(ProgramAST &node) {
     for (auto &stmnt : node.Body) {
         stmnt->accept(*this);
     }
-    emit(Instruction::END, "-", "-", "-");
+    emit(Instruction::END, -1, -1, -1);
 }

@@ -8,7 +8,7 @@ bool Scope::insert_symbol(const std::string &name, Type type) {
         std::cerr << "symbol " << name << " already declared " << std::endl;
         return false;
     }
-    vars.insert({name, SymbolEntry(name, type, false)});
+    // vars.insert({name, SymbolEntry(name, type, false)});
     return true;
 }
 

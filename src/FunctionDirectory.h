@@ -2,6 +2,7 @@
 
 #include "SymbolEntry.h"
 #include "Types.h"
+#include "address.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -9,6 +10,7 @@
 struct FuncParam {
     std::string id;
     Type type;
+    Address virt_addr;
 };
 
 class FunctionDirectoryEntry {
@@ -24,7 +26,8 @@ class FunctionDirectoryEntry {
         : name(name), params(params), return_type(type) {
         // populate func symb table with params
         for (const auto &param : params) {
-            symbol_table[param.id] = SymbolEntry(param.id, param.type, false);
+            symbol_table[param.id] =
+                SymbolEntry(param.id, param.type, false, param.virt_addr);
         }
     }
 

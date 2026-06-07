@@ -2,8 +2,11 @@
 #include "FunctionDirectory.h"
 #include "SemanticCube.h"
 #include "Types.h"
+#include "address.h"
 #include "instructions.h"
+#include "memory_manager.h"
 #include <stack>
+#include <variant>
 
 class IntegerLiteral;
 class FloatingLiteral;
@@ -24,9 +27,6 @@ class CallStmt;
 class ReturnStmnt;
 
 class ProgramAST;
-
-// literal string for now
-using Address = std::string;
 
 // currently quads we manage a b t1, no virt addresses yet
 struct Quadruple {
@@ -75,6 +75,8 @@ class QuadGenerator : public Visitor {
     // std::stack<std::string> scope_stack;
     std::string current_scope;
 
+    MemoryManager &mm;
+
     int tmp_count = 0;
 
     Address new_temp();
@@ -85,8 +87,8 @@ class QuadGenerator : public Visitor {
 
   public:
     QuadGenerator(FunctionDirectory &dir, std::vector<Quadruple> &quads,
-                  SemanticCube &cube)
-        : dir(dir), quads(quads), current_scope("global"), cube(cube) {}
+                  SemanticCube &cube, MemoryManager &mm)
+        : dir(dir), quads(quads), current_scope("global"), cube(cube), mm(mm) {}
 
     // expr
     void visit(IntegerLiteral &node) override;

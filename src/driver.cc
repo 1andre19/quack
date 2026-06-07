@@ -20,6 +20,7 @@ void driver::compile() {
         std::cout << "No ast" << std::endl;
     }
     func_dir.add_entry("global", {}, Type::VOID);
-    QuadGenerator gen(func_dir, quads, cube);
+    MemoryManager mm;
+    QuadGenerator gen(func_dir, quads, cube, mm);
     ast->accept(gen);
 }
