@@ -452,36 +452,39 @@ namespace yy {
       // param
       char dummy10[sizeof (std::unique_ptr<ParamVarDecl>)];
 
+      // retorna
+      char dummy11[sizeof (std::unique_ptr<ReturnStmnt>)];
+
       // estatuto
       // imprime
       // ciclo
       // asigna
-      char dummy11[sizeof (std::unique_ptr<StmntAST>)];
+      char dummy12[sizeof (std::unique_ptr<StmntAST>)];
 
       // list_id
-      char dummy12[sizeof (std::vector<std::string>)];
+      char dummy13[sizeof (std::vector<std::string>)];
 
       // imprime_mas
       // args
       // list_expr
-      char dummy13[sizeof (std::vector<std::unique_ptr<ExprAST>>)];
+      char dummy14[sizeof (std::vector<std::unique_ptr<ExprAST>>)];
 
       // funcs.opt
-      char dummy14[sizeof (std::vector<std::unique_ptr<FuncDeclStmt>>)];
+      char dummy15[sizeof (std::vector<std::unique_ptr<FuncDeclStmt>>)];
 
       // parametros
       // list_param
-      char dummy15[sizeof (std::vector<std::unique_ptr<ParamVarDecl>>)];
+      char dummy16[sizeof (std::vector<std::unique_ptr<ParamVarDecl>>)];
 
       // cuerpo
       // adentro
       // sino
-      char dummy16[sizeof (std::vector<std::unique_ptr<StmntAST>>)];
+      char dummy17[sizeof (std::vector<std::unique_ptr<StmntAST>>)];
 
       // vars
       // vars.opt
       // list_vars
-      char dummy17[sizeof (std::vector<std::unique_ptr<VarDeclStmt>>)];
+      char dummy18[sizeof (std::vector<std::unique_ptr<VarDeclStmt>>)];
     };
 
     /// The size of the largest semantic type.
@@ -550,24 +553,25 @@ namespace yy {
     TOK_IF = 16,                   // "si"
     TOK_ELSE = 17,                 // "sino"
     TOK_PRINT = 18,                // "escribe"
-    TOK_LPAREN = 19,               // "("
-    TOK_RPAREN = 20,               // ")"
-    TOK_LBRACE = 21,               // "{"
-    TOK_RBRACE = 22,               // "}"
-    TOK_LBRACKET = 23,             // "["
-    TOK_RBRACKET = 24,             // "]"
-    TOK_SEMICOLON = 25,            // ";"
-    TOK_COMMA = 26,                // ","
-    TOK_COLON = 27,                // ":"
-    TOK_ASSIGN = 28,               // "="
-    TOK_GT = 29,                   // ">"
-    TOK_LT = 30,                   // "<"
-    TOK_NEQ = 31,                  // "!="
-    TOK_EQ = 32,                   // "=="
-    TOK_PLUS = 33,                 // PLUS
-    TOK_MINUS = 35,                // MINUS
-    TOK_TIMES = 37,                // TIMES
-    TOK_DIV = 39                   // DIV
+    TOK_RETORNA = 19,              // "retorna"
+    TOK_LPAREN = 20,               // "("
+    TOK_RPAREN = 21,               // ")"
+    TOK_LBRACE = 22,               // "{"
+    TOK_RBRACE = 23,               // "}"
+    TOK_LBRACKET = 24,             // "["
+    TOK_RBRACKET = 25,             // "]"
+    TOK_SEMICOLON = 26,            // ";"
+    TOK_COMMA = 27,                // ","
+    TOK_COLON = 28,                // ":"
+    TOK_ASSIGN = 29,               // "="
+    TOK_GT = 30,                   // ">"
+    TOK_LT = 31,                   // "<"
+    TOK_NEQ = 32,                  // "!="
+    TOK_EQ = 33,                   // "=="
+    TOK_PLUS = 34,                 // PLUS
+    TOK_MINUS = 36,                // MINUS
+    TOK_TIMES = 38,                // TIMES
+    TOK_DIV = 40                   // DIV
       };
       /// Backward compatibility alias (Bison 3.6).
       typedef token_kind_type yytokentype;
@@ -584,7 +588,7 @@ namespace yy {
     {
       enum symbol_kind_type
       {
-        YYNTOKENS = 41, ///< Number of tokens.
+        YYNTOKENS = 42, ///< Number of tokens.
         S_YYEMPTY = -2,
         S_YYEOF = 0,                             // "end of file"
         S_YYerror = 1,                           // error
@@ -605,61 +609,63 @@ namespace yy {
         S_IF = 16,                               // "si"
         S_ELSE = 17,                             // "sino"
         S_PRINT = 18,                            // "escribe"
-        S_LPAREN = 19,                           // "("
-        S_RPAREN = 20,                           // ")"
-        S_LBRACE = 21,                           // "{"
-        S_RBRACE = 22,                           // "}"
-        S_LBRACKET = 23,                         // "["
-        S_RBRACKET = 24,                         // "]"
-        S_SEMICOLON = 25,                        // ";"
-        S_COMMA = 26,                            // ","
-        S_COLON = 27,                            // ":"
-        S_ASSIGN = 28,                           // "="
-        S_GT = 29,                               // ">"
-        S_LT = 30,                               // "<"
-        S_NEQ = 31,                              // "!="
-        S_EQ = 32,                               // "=="
-        S_PLUS = 33,                             // PLUS
-        S_34_ = 34,                              // "+"
-        S_MINUS = 35,                            // MINUS
-        S_36_ = 36,                              // "-"
-        S_TIMES = 37,                            // TIMES
-        S_38_ = 38,                              // "*"
-        S_DIV = 39,                              // DIV
-        S_40_ = 40,                              // "/"
-        S_YYACCEPT = 41,                         // $accept
-        S_programa = 42,                         // programa
-        S_43_funcs_opt = 43,                     // funcs.opt
-        S_cuerpo = 44,                           // cuerpo
-        S_adentro = 45,                          // adentro
-        S_estatuto = 46,                         // estatuto
-        S_imprime = 47,                          // imprime
-        S_imprime_args = 48,                     // imprime_args
-        S_imprime_mas = 49,                      // imprime_mas
-        S_ciclo = 50,                            // ciclo
-        S_condicion = 51,                        // condicion
-        S_sino = 52,                             // sino
-        S_vars = 53,                             // vars
-        S_54_vars_opt = 54,                      // vars.opt
-        S_list_vars = 55,                        // list_vars
-        S_list_id = 56,                          // list_id
-        S_tipo = 57,                             // tipo
-        S_cte = 58,                              // cte
-        S_asigna = 59,                           // asigna
-        S_expresion = 60,                        // expresion
-        S_exp = 61,                              // exp
-        S_comp = 62,                             // comp
-        S_termino = 63,                          // termino
-        S_factor = 64,                           // factor
-        S_signo = 65,                            // signo
-        S_llamada = 66,                          // llamada
-        S_args = 67,                             // args
-        S_list_expr = 68,                        // list_expr
-        S_funcs = 69,                            // funcs
-        S_parametros = 70,                       // parametros
-        S_param = 71,                            // param
-        S_list_param = 72,                       // list_param
-        S_tipo_func = 73                         // tipo_func
+        S_RETORNA = 19,                          // "retorna"
+        S_LPAREN = 20,                           // "("
+        S_RPAREN = 21,                           // ")"
+        S_LBRACE = 22,                           // "{"
+        S_RBRACE = 23,                           // "}"
+        S_LBRACKET = 24,                         // "["
+        S_RBRACKET = 25,                         // "]"
+        S_SEMICOLON = 26,                        // ";"
+        S_COMMA = 27,                            // ","
+        S_COLON = 28,                            // ":"
+        S_ASSIGN = 29,                           // "="
+        S_GT = 30,                               // ">"
+        S_LT = 31,                               // "<"
+        S_NEQ = 32,                              // "!="
+        S_EQ = 33,                               // "=="
+        S_PLUS = 34,                             // PLUS
+        S_35_ = 35,                              // "+"
+        S_MINUS = 36,                            // MINUS
+        S_37_ = 37,                              // "-"
+        S_TIMES = 38,                            // TIMES
+        S_39_ = 39,                              // "*"
+        S_DIV = 40,                              // DIV
+        S_41_ = 41,                              // "/"
+        S_YYACCEPT = 42,                         // $accept
+        S_programa = 43,                         // programa
+        S_44_funcs_opt = 44,                     // funcs.opt
+        S_cuerpo = 45,                           // cuerpo
+        S_adentro = 46,                          // adentro
+        S_estatuto = 47,                         // estatuto
+        S_retorna = 48,                          // retorna
+        S_imprime = 49,                          // imprime
+        S_imprime_args = 50,                     // imprime_args
+        S_imprime_mas = 51,                      // imprime_mas
+        S_ciclo = 52,                            // ciclo
+        S_condicion = 53,                        // condicion
+        S_sino = 54,                             // sino
+        S_vars = 55,                             // vars
+        S_56_vars_opt = 56,                      // vars.opt
+        S_list_vars = 57,                        // list_vars
+        S_list_id = 58,                          // list_id
+        S_tipo = 59,                             // tipo
+        S_cte = 60,                              // cte
+        S_asigna = 61,                           // asigna
+        S_expresion = 62,                        // expresion
+        S_exp = 63,                              // exp
+        S_comp = 64,                             // comp
+        S_termino = 65,                          // termino
+        S_factor = 66,                           // factor
+        S_signo = 67,                            // signo
+        S_llamada = 68,                          // llamada
+        S_args = 69,                             // args
+        S_list_expr = 70,                        // list_expr
+        S_funcs = 71,                            // funcs
+        S_parametros = 72,                       // parametros
+        S_param = 73,                            // param
+        S_list_param = 74,                       // list_param
+        S_tipo_func = 75                         // tipo_func
       };
     };
 
@@ -744,6 +750,10 @@ namespace yy {
         value.move< std::unique_ptr<ParamVarDecl> > (std::move (that.value));
         break;
 
+      case symbol_kind::S_retorna: // retorna
+        value.move< std::unique_ptr<ReturnStmnt> > (std::move (that.value));
+        break;
+
       case symbol_kind::S_estatuto: // estatuto
       case symbol_kind::S_imprime: // imprime
       case symbol_kind::S_ciclo: // ciclo
@@ -761,7 +771,7 @@ namespace yy {
         value.move< std::vector<std::unique_ptr<ExprAST>> > (std::move (that.value));
         break;
 
-      case symbol_kind::S_43_funcs_opt: // funcs.opt
+      case symbol_kind::S_44_funcs_opt: // funcs.opt
         value.move< std::vector<std::unique_ptr<FuncDeclStmt>> > (std::move (that.value));
         break;
 
@@ -777,7 +787,7 @@ namespace yy {
         break;
 
       case symbol_kind::S_vars: // vars
-      case symbol_kind::S_54_vars_opt: // vars.opt
+      case symbol_kind::S_56_vars_opt: // vars.opt
       case symbol_kind::S_list_vars: // list_vars
         value.move< std::vector<std::unique_ptr<VarDeclStmt>> > (std::move (that.value));
         break;
@@ -939,6 +949,20 @@ namespace yy {
       {}
 #else
       basic_symbol (typename Base::kind_type t, const std::unique_ptr<ParamVarDecl>& v, const location_type& l)
+        : Base (t)
+        , value (v)
+        , location (l)
+      {}
+#endif
+
+#if 201103L <= YY_CPLUSPLUS
+      basic_symbol (typename Base::kind_type t, std::unique_ptr<ReturnStmnt>&& v, location_type&& l)
+        : Base (t)
+        , value (std::move (v))
+        , location (std::move (l))
+      {}
+#else
+      basic_symbol (typename Base::kind_type t, const std::unique_ptr<ReturnStmnt>& v, const location_type& l)
         : Base (t)
         , value (v)
         , location (l)
@@ -1115,6 +1139,10 @@ switch (yykind)
         value.template destroy< std::unique_ptr<ParamVarDecl> > ();
         break;
 
+      case symbol_kind::S_retorna: // retorna
+        value.template destroy< std::unique_ptr<ReturnStmnt> > ();
+        break;
+
       case symbol_kind::S_estatuto: // estatuto
       case symbol_kind::S_imprime: // imprime
       case symbol_kind::S_ciclo: // ciclo
@@ -1132,7 +1160,7 @@ switch (yykind)
         value.template destroy< std::vector<std::unique_ptr<ExprAST>> > ();
         break;
 
-      case symbol_kind::S_43_funcs_opt: // funcs.opt
+      case symbol_kind::S_44_funcs_opt: // funcs.opt
         value.template destroy< std::vector<std::unique_ptr<FuncDeclStmt>> > ();
         break;
 
@@ -1148,7 +1176,7 @@ switch (yykind)
         break;
 
       case symbol_kind::S_vars: // vars
-      case symbol_kind::S_54_vars_opt: // vars.opt
+      case symbol_kind::S_56_vars_opt: // vars.opt
       case symbol_kind::S_list_vars: // list_vars
         value.template destroy< std::vector<std::unique_ptr<VarDeclStmt>> > ();
         break;
@@ -1252,7 +1280,7 @@ switch (yykind)
 #if !defined _MSC_VER || defined __clang__
         YY_ASSERT (tok == token::TOK_YYEOF
                    || (token::TOK_YYerror <= tok && tok <= token::TOK_YYUNDEF)
-                   || (token::TOK_PROGRAMA <= tok && tok <= 295));
+                   || (token::TOK_PROGRAMA <= tok && tok <= 296));
 #endif
       }
 #if 201103L <= YY_CPLUSPLUS
@@ -1627,6 +1655,21 @@ switch (yykind)
 #if 201103L <= YY_CPLUSPLUS
       static
       symbol_type
+      make_RETORNA (location_type l)
+      {
+        return symbol_type (token::TOK_RETORNA, std::move (l));
+      }
+#else
+      static
+      symbol_type
+      make_RETORNA (const location_type& l)
+      {
+        return symbol_type (token::TOK_RETORNA, l);
+      }
+#endif
+#if 201103L <= YY_CPLUSPLUS
+      static
+      symbol_type
       make_LPAREN (location_type l)
       {
         return symbol_type (token::TOK_LPAREN, std::move (l));
@@ -1934,7 +1977,7 @@ switch (yykind)
     void yy_lac_discard_ (const char* event);
 
     /// Stored state numbers (used for stacks).
-    typedef signed char state_type;
+    typedef unsigned char state_type;
 
     /// The arguments of the error message.
     int yy_syntax_error_arguments_ (const context& yyctx,
@@ -1985,7 +2028,7 @@ switch (yykind)
     // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
     // positive, shift that token.  If negative, reduce the rule whose
     // number is the opposite.  If YYTABLE_NINF, syntax error.
-    static const signed char yytable_[];
+    static const unsigned char yytable_[];
 
     static const signed char yycheck_[];
 
@@ -2238,8 +2281,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 138,     ///< Last index in yytable_.
-      yynnts_ = 33,  ///< Number of nonterminal symbols.
+      yylast_ = 129,     ///< Last index in yytable_.
+      yynnts_ = 34,  ///< Number of nonterminal symbols.
       yyfinal_ = 4 ///< Termination state number.
     };
 
@@ -2313,6 +2356,10 @@ switch (yykind)
         value.copy< std::unique_ptr<ParamVarDecl> > (YY_MOVE (that.value));
         break;
 
+      case symbol_kind::S_retorna: // retorna
+        value.copy< std::unique_ptr<ReturnStmnt> > (YY_MOVE (that.value));
+        break;
+
       case symbol_kind::S_estatuto: // estatuto
       case symbol_kind::S_imprime: // imprime
       case symbol_kind::S_ciclo: // ciclo
@@ -2330,7 +2377,7 @@ switch (yykind)
         value.copy< std::vector<std::unique_ptr<ExprAST>> > (YY_MOVE (that.value));
         break;
 
-      case symbol_kind::S_43_funcs_opt: // funcs.opt
+      case symbol_kind::S_44_funcs_opt: // funcs.opt
         value.copy< std::vector<std::unique_ptr<FuncDeclStmt>> > (YY_MOVE (that.value));
         break;
 
@@ -2346,7 +2393,7 @@ switch (yykind)
         break;
 
       case symbol_kind::S_vars: // vars
-      case symbol_kind::S_54_vars_opt: // vars.opt
+      case symbol_kind::S_56_vars_opt: // vars.opt
       case symbol_kind::S_list_vars: // list_vars
         value.copy< std::vector<std::unique_ptr<VarDeclStmt>> > (YY_MOVE (that.value));
         break;
@@ -2430,6 +2477,10 @@ switch (yykind)
         value.move< std::unique_ptr<ParamVarDecl> > (YY_MOVE (s.value));
         break;
 
+      case symbol_kind::S_retorna: // retorna
+        value.move< std::unique_ptr<ReturnStmnt> > (YY_MOVE (s.value));
+        break;
+
       case symbol_kind::S_estatuto: // estatuto
       case symbol_kind::S_imprime: // imprime
       case symbol_kind::S_ciclo: // ciclo
@@ -2447,7 +2498,7 @@ switch (yykind)
         value.move< std::vector<std::unique_ptr<ExprAST>> > (YY_MOVE (s.value));
         break;
 
-      case symbol_kind::S_43_funcs_opt: // funcs.opt
+      case symbol_kind::S_44_funcs_opt: // funcs.opt
         value.move< std::vector<std::unique_ptr<FuncDeclStmt>> > (YY_MOVE (s.value));
         break;
 
@@ -2463,7 +2514,7 @@ switch (yykind)
         break;
 
       case symbol_kind::S_vars: // vars
-      case symbol_kind::S_54_vars_opt: // vars.opt
+      case symbol_kind::S_56_vars_opt: // vars.opt
       case symbol_kind::S_list_vars: // list_vars
         value.move< std::vector<std::unique_ptr<VarDeclStmt>> > (YY_MOVE (s.value));
         break;
@@ -2534,7 +2585,7 @@ switch (yykind)
 
 
 } // yy
-#line 2538 "parser.hh"
+#line 2589 "parser.hh"
 
 
 

@@ -51,6 +51,8 @@
 %type <std::vector<std::unique_ptr<FuncDeclStmt>>> funcs.opt
 %type <std::vector<std::unique_ptr<VarDeclStmt>>> vars.opt
 
+%type <std::unique_ptr<ReturnStmnt>> retorna
+
 %type <std::unique_ptr<ExprAST>> cte
 
 %token <std::string>  ID LETRERO 
@@ -70,6 +72,7 @@
     IF        "si"
     ELSE      "sino"
     PRINT     "escribe"
+    RETORNA   "retorna"
 
 %token
     LPAREN    "("
@@ -159,14 +162,25 @@ estatuto:
   {
     $$ = std::make_unique<CallStmt>(std::move($1));
   }
-  | imprime
+  | imprime ";"
+  {
+    $$ = std::move($1);
+  }
+  | retorna ";"
   {
     $$ = std::move($1);
   }
   ;
 
+retorna:
+       "retorna" expresion 
+       {
+            $$ = std::make_unique<ReturnStmnt>(std::move($2));
+       }
+       ;
+
 imprime:
-    PRINT "(" imprime_args imprime_mas ")" ";"
+    PRINT "(" imprime_args imprime_mas ")" 
     {
         $4.insert($4.begin(), std::move($3));
         $$ = std::make_unique<PrintStmnt>(

@@ -21,6 +21,7 @@ class PrintStmnt;
 class WhileStmnt;
 class IfStmnt;
 class CallStmt;
+class ReturnStmnt;
 
 class ProgramAST;
 
@@ -53,6 +54,7 @@ class Visitor {
     virtual void visit(WhileStmnt &node) = 0;
     virtual void visit(IfStmnt &node) = 0;
     virtual void visit(CallStmt &node) = 0;
+    virtual void visit(ReturnStmnt &node) = 0;
 
     // program
     virtual void visit(ProgramAST &node) = 0;
@@ -103,6 +105,7 @@ class QuadGenerator : public Visitor {
     void visit(WhileStmnt &node) override;
     void visit(IfStmnt &node) override;
     void visit(CallStmt &node) override;
+    void visit(ReturnStmnt &node) override;
     // program
     void visit(ProgramAST &node) override;
 };

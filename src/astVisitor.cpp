@@ -100,6 +100,7 @@ void QuadGenerator::visit(BinaryOpExpr &node) {
         // no fcking clue as in idk how to handle it, its type mismatch
         throw SemanticError("type mismatch; ");
     }
+
     type_stack.push(res_type);
     Address arg2 = argument_stack.top();
     argument_stack.pop();
@@ -194,6 +195,7 @@ void QuadGenerator::visit(WhileStmnt &node) {
     jump_stack.pop();
     emit(Instruction::JMP, "-", "-", std::to_string(start_while));
 }
+
 void QuadGenerator::visit(IfStmnt &node) {
     // todo,
     // todo
@@ -241,6 +243,14 @@ void QuadGenerator::visit(CallExpr &node) {
     if (func == nullptr) {
         throw SemanticError("function " + node.Callee + " does not exist");
     }
+    emit(Instruction::ERA, "-", "-", node.Callee);
+
+    if (node.Args.size() != func->params.size()) {
+        throw SemanticError("Invalid function call to " + node.Callee +
+                            ": incorrect number of arguments, got: " +
+                            std::to_string(node.Args.size()) + " expected: " +
+                            std::to_string(func->params.size()));
+    }
     /*
     compute args ex: func(a : entero, b : flotante, c + 10 : entero)
      on the stack they will live as
@@ -255,9 +265,48 @@ void QuadGenerator::visit(CallExpr &node) {
      iterate over this from end to start,
      compare with type stack, to see if the order of args are correct
     */
+
+    for (auto &arg : node.Args) {
+        arg->accept(*this);
+    }
+
+    int curr_arg = node.Args.size();
+    for (int i = node.Args.size() - 1; i >= 0; i--) {
+        if (func->params[i].type != type_stack.top()) {
+            // include expected certain type got certain type
+            throw SemanticError("Invalid function call to " + node.Callee);
+        }
+        type_stack.pop();
+        emit(Instruction::PARAM, argument_stack.top(), "-",
+             std::to_string(curr_arg));
+        argument_stack.pop();
+        curr_arg--;
+    }
+
+    emit(Instruction::CALL, "-", "-", node.Callee);
+
+    if (func->return_type != Type::VOID) {
+        Address temp = new_temp();
+        emit(Instruction::MOV, node.Callee, "-", temp);
+        argument_stack.push(temp);
+        type_stack.push(func->return_type);
+    }
 }
 
 void QuadGenerator::visit(CallStmt &node) { node.Call->accept(*this); }
+
+void QuadGenerator::visit(ReturnStmnt &node) {
+    node.expr->accept(*this);
+    FunctionDirectoryEntry *curr_func = dir.lookup_entry(current_scope);
+    if (type_stack.top() != curr_func->return_type) {
+        throw SemanticError("incorrect return type for function " +
+                            curr_func->name + " ; expected type lallalal");
+    }
+    type_stack.pop();
+    Address to_return = argument_stack.top();
+    argument_stack.pop();
+    emit(Instruction::RET, "-", "-", to_return);
+}
 
 void QuadGenerator::visit(ProgramAST &node) {
     emit(Instruction::JMP, "-", "-", "-"); // jump to main

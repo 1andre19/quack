@@ -176,6 +176,13 @@ class CallStmt : public StmntAST {
     void accept(Visitor &v) override;
 };
 
+class ReturnStmnt : public StmntAST {
+  public:
+    std::unique_ptr<ExprAST> expr;
+    ReturnStmnt(std::unique_ptr<ExprAST> expr) : expr(std::move(expr)) {}
+    void accept(Visitor &v) override;
+};
+
 class ProgramAST : public NodeAST {
   public:
     std::string Name;

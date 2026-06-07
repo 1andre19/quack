@@ -17,3 +17,4 @@ void IfStmnt::accept(Visitor &v) { v.visit(*this); }
 void CallExpr::accept(Visitor &v) { v.visit(*this); }
 void CallStmt::accept(Visitor &v) { v.visit(*this); }
 void ProgramAST::accept(Visitor &v) { v.visit(*this); }
+void ReturnStmnt::accept(Visitor &v) { v.visit(*this); }

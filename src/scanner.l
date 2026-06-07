@@ -29,6 +29,7 @@
 "si"            return yy::parser::make_IF(drv.location);
 "sino"          return yy::parser::make_ELSE(drv.location);
 "escribe"       return yy::parser::make_PRINT(drv.location);
+"retorna"       return yy::parser::make_RETORNA(drv.location);
 
 "("             return yy::parser::make_LPAREN(drv.location);
 ")"             return yy::parser::make_RPAREN(drv.location);
@@ -56,7 +57,7 @@
 
 .   {
       throw yy::parser::syntax_error(drv.location,
-        "caracter desconocido: " + std::string(yytext));
+        "token desconocido: " + std::string(yytext));
     }
 
 <<EOF>>         return yy::parser::make_YYEOF(drv.location);
