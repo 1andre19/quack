@@ -3,6 +3,7 @@
 #include "SemanticCube.h"
 #include "Types.h"
 #include "address.h"
+#include "const_table.h"
 #include "instructions.h"
 #include "memory_manager.h"
 #include <stack>
@@ -76,6 +77,7 @@ class QuadGenerator : public Visitor {
     std::string current_scope;
 
     MemoryManager &mm;
+    const_table &ct;
 
     int tmp_count = 0;
 
@@ -87,8 +89,9 @@ class QuadGenerator : public Visitor {
 
   public:
     QuadGenerator(FunctionDirectory &dir, std::vector<Quadruple> &quads,
-                  SemanticCube &cube, MemoryManager &mm)
-        : dir(dir), quads(quads), current_scope("global"), cube(cube), mm(mm) {}
+                  SemanticCube &cube, MemoryManager &mm, const_table &ct)
+        : dir(dir), quads(quads), current_scope("global"), cube(cube), mm(mm),
+          ct(ct) {}
 
     // expr
     void visit(IntegerLiteral &node) override;

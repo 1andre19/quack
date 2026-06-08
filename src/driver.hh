@@ -6,6 +6,7 @@
 #include "Types.h"
 #include "ast.h"
 #include "astVisitor.h"
+#include "const_table.h"
 #include "memory_manager.h"
 #include "parser.hh"
 #include <memory>
@@ -25,6 +26,7 @@ class driver {
     std::unique_ptr<ProgramAST> ast;
     FunctionDirectory func_dir;
     std::vector<Quadruple> quads;
+    const_table ct;
     // MemoryManager mm;
     driver();
 

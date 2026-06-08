@@ -377,7 +377,18 @@ termino:
   ;
 
 factor:
-    "(" expresion ")"
+      PLUS factor
+      {
+        $$ = std::move($2);
+      }
+  | MINUS factor
+      {
+            $$ = std::make_unique<UnaryOpExpr>(
+            Operator::MINUS,
+            std::move($2)
+        );
+      }
+  |"(" expresion ")"
     {
         $$ = std::move($2);
     }
@@ -388,15 +399,6 @@ factor:
   | cte
   {
     $$ = std::move($1);
-  }
-  | signo ID
-  {
-    $$ = std::make_unique<UnaryOpExpr>($1, std::make_unique<ReferenceExpr>($2));
-
-  }
-  | signo cte
-  {
-    $$ = std::make_unique<UnaryOpExpr>($1, std::move($2));
   }
   | llamada
   {

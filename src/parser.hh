@@ -415,7 +415,6 @@ namespace yy {
     union union_type
     {
       // comp
-      // signo
       char dummy1[sizeof (Operator)];
 
       // tipo
@@ -657,15 +656,14 @@ namespace yy {
         S_comp = 64,                             // comp
         S_termino = 65,                          // termino
         S_factor = 66,                           // factor
-        S_signo = 67,                            // signo
-        S_llamada = 68,                          // llamada
-        S_args = 69,                             // args
-        S_list_expr = 70,                        // list_expr
-        S_funcs = 71,                            // funcs
-        S_parametros = 72,                       // parametros
-        S_param = 73,                            // param
-        S_list_param = 74,                       // list_param
-        S_tipo_func = 75                         // tipo_func
+        S_llamada = 67,                          // llamada
+        S_args = 68,                             // args
+        S_list_expr = 69,                        // list_expr
+        S_funcs = 70,                            // funcs
+        S_parametros = 71,                       // parametros
+        S_param = 72,                            // param
+        S_list_param = 73,                       // list_param
+        S_tipo_func = 74                         // tipo_func
       };
     };
 
@@ -703,7 +701,6 @@ namespace yy {
         switch (this->kind ())
     {
       case symbol_kind::S_comp: // comp
-      case symbol_kind::S_signo: // signo
         value.move< Operator > (std::move (that.value));
         break;
 
@@ -1092,7 +1089,6 @@ namespace yy {
 switch (yykind)
     {
       case symbol_kind::S_comp: // comp
-      case symbol_kind::S_signo: // signo
         value.template destroy< Operator > ();
         break;
 
@@ -2281,8 +2277,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 129,     ///< Last index in yytable_.
-      yynnts_ = 34,  ///< Number of nonterminal symbols.
+      yylast_ = 125,     ///< Last index in yytable_.
+      yynnts_ = 33,  ///< Number of nonterminal symbols.
       yyfinal_ = 4 ///< Termination state number.
     };
 
@@ -2309,7 +2305,6 @@ switch (yykind)
     switch (this->kind ())
     {
       case symbol_kind::S_comp: // comp
-      case symbol_kind::S_signo: // signo
         value.copy< Operator > (YY_MOVE (that.value));
         break;
 
@@ -2430,7 +2425,6 @@ switch (yykind)
     switch (this->kind ())
     {
       case symbol_kind::S_comp: // comp
-      case symbol_kind::S_signo: // signo
         value.move< Operator > (YY_MOVE (s.value));
         break;
 
@@ -2585,7 +2579,7 @@ switch (yykind)
 
 
 } // yy
-#line 2589 "parser.hh"
+#line 2583 "parser.hh"
 
 
 

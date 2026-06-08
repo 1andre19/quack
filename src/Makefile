@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall
 
 SRCS = main.cpp driver.cc parser.cc lex.yy.cc Scopes.cpp SemanticCube.cpp \
-       FunctionDirectory.cpp ast.cpp astVisitor.cpp
+       FunctionDirectory.cpp ast.cpp astVisitor.cpp vm.cpp
 
 # Generated files
 GENERATED = parser.cc parser.hh lex.yy.cc

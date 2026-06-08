@@ -1,5 +1,6 @@
 #include "driver.hh"
 #include "astVisitor.h"
+#include "const_table.h"
 #include "parser.hh"
 
 driver::driver()
@@ -19,8 +20,10 @@ void driver::compile() {
     if (!ast) {
         std::cout << "No ast" << std::endl;
     }
-    func_dir.add_entry("global", {}, Type::VOID);
+    // also need to calculate resources for program
+    func_dir.add_entry("global", {}, {}, Type::VOID,
+                       0); // start_quad esta mal pero no lousaremos
     MemoryManager mm;
-    QuadGenerator gen(func_dir, quads, cube, mm);
+    QuadGenerator gen(func_dir, quads, cube, mm, ct);
     ast->accept(gen);
 }

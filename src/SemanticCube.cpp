@@ -33,4 +33,6 @@ void SemanticCube::CubeInit() {
 
     cube[Operator::ASSIGN][Type::INT][Type::INT] = Type::INT;
     cube[Operator::ASSIGN][Type::FLOAT][Type::FLOAT] = Type::FLOAT;
+    cube[Operator::ASSIGN][Type::FLOAT][Type::INT] = Type::FLOAT;
+    cube[Operator::ASSIGN][Type::INT][Type::FLOAT] = Type::INT;
 }

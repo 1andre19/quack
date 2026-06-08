@@ -3,6 +3,7 @@
 #include "SymbolEntry.h"
 #include "Types.h"
 #include "address.h"
+#include "func_resources.h"
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -17,13 +18,15 @@ class FunctionDirectoryEntry {
   public:
     std::string name;
     std::vector<FuncParam> params;
-    // std::size_t resources
+    func_resources resources;
     Type return_type;
-    // int start_address; for quads
+    int start_quad;
     std::unordered_map<std::string, SymbolEntry> symbol_table;
     FunctionDirectoryEntry(std::string name,
-                           const std::vector<FuncParam> params, Type type)
-        : name(name), params(params), return_type(type) {
+                           const std::vector<FuncParam> params,
+                           func_resources resources, Type type, int start_quad)
+        : name(name), params(params), resources(resources), return_type(type),
+          start_quad(start_quad) {
         // populate func symb table with params
         for (const auto &param : params) {
             symbol_table[param.id] =
@@ -38,14 +41,16 @@ class FunctionDirectoryEntry {
         symbol_table[sym.name] = sym;
         return true;
     }
+
+    void print_resources();
 };
 
 // could not a class but just an object of type map<str, funcEntry>
 class FunctionDirectory {
-    std::unordered_map<std::string, FunctionDirectoryEntry> directory;
-
   public:
+    std::unordered_map<std::string, FunctionDirectoryEntry> directory;
     bool add_entry(const std::string &funcName,
-                   const std::vector<FuncParam> &params, Type return_type);
+                   const std::vector<FuncParam> &params,
+                   func_resources resources, Type return_type, int start_quad);
     FunctionDirectoryEntry *lookup_entry(const std::string &name);
 };
