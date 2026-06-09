@@ -3,9 +3,10 @@ vars
   x : entero;
 inicio
 {
+  x = 10;
   si (x > 0)
   {
-    x = 1;
+      escribe("x es positivo");
   };
 }
 fin

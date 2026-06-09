@@ -1,0 +1,24 @@
+programa pelos;
+
+vars
+    i : entero;
+    j : entero;
+
+entero uno(x : entero) {
+    {
+        retorna x * 2;
+    }
+};
+
+entero dos(x : entero) {
+    {
+        retorna x * uno(x);
+    }
+};
+
+inicio
+{
+    i = 5;
+    escribe(dos(i + 3 - 1));
+}
+fin

@@ -3,13 +3,14 @@ vars
   x : entero;
 inicio
 {
-  si (x != 0)
+  x = -10;
+  si (x > 0)
   {
-    x = 1;
+      escribe("x es positivo");
   }
   sino
   {
-    x = 0;
+      escribe("x es negativo");
   };
 }
 fin
