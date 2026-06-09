@@ -1,4 +1,10 @@
-# Quack — Documentación del Compilador
+# Quack — Documentación Patito
+
+#### DISCLAIMER: 
+Esta documentación fue generada con Claude Code usando el model Sonnet 4.6. Se utilizó
+este modelo para ayudar en el desarrollo de este proyecto, se utilizó principalmente para
+idear conceptos de arquitectura y diseños de la aplicación, la mayoría del código fue escrito
+por mi.
 
 ## Índice
 
@@ -15,7 +21,7 @@
 
 ## 1. Descripción del Lenguaje
 
-**Quack** es un lenguaje de programación imperativo con tipado estático, diseñado con palabras clave en español. El compilador traduce código fuente `.pat` a cuádruplos que son ejecutados por una máquina virtual (VM) integrada.
+**Patito** es un lenguaje de programación imperativo con tipado estático, diseñado con palabras clave en español. El compilador traduce código fuente `.pat` a cuádruplos que son ejecutados por una máquina virtual (VM) integrada.
 
 ### Características principales
 
